@@ -11,9 +11,9 @@
 
 [package]
 edition = "2021"
-name = "pilota-build"
+name = "pilota-build2"
 version = "0.7.7"
-authors = ["Pilota Team <pilota@cloudwego.io>"]
+authors = ["Pilota Team <pilota@cloudwego.io>", "Andeya <andeyalee@outlook.com>"]
 description = "Compile thrift and protobuf idl into rust code at compile-time."
 homepage = "https://cloudwego.io/docs/pilota/"
 documentation = "https://docs.rs/pilota-build"
@@ -25,7 +25,7 @@ keywords = [
     "volo",
 ]
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/cloudwego/pilota"
+repository = "https://github.com/andeya/pilota-build"
 
 [[bench]]
 name = "codegen"

@@ -1,0 +1,7 @@
+.idea
+
+*.a
+*.h
+
+/target
+/Cargo.lock
