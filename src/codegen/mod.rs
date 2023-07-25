@@ -9,9 +9,10 @@ use std::collections::HashMap;
 use dashmap::DashMap;
 use faststr::FastStr;
 use itertools::Itertools;
-use pkg_tree::PkgNode;
 use quote::quote;
 use rayon::prelude::IntoParallelRefIterator;
+
+use pkg_tree::PkgNode;
 use traits::CodegenBackend;
 
 use crate::{
@@ -542,7 +543,9 @@ impl<B> Codegen<B>
             self.codegen_items.iter().map(|def_id| (*def_id).into()),
         );
 
-        stream = format! {r#"#![allow(warnings, clippy::all)]
+        let doc = self.doc_header.as_str();
+        stream = format! {r#"{doc}
+        #![allow(warnings, clippy::all)]
                 {stream}
         "#};
 

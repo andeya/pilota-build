@@ -61,6 +61,7 @@ pub struct Context {
     pub(crate) codegen_items: Arc<Vec<DefId>>,
     pub(crate) path_resolver: Arc<dyn PathResolver>,
     pub(crate) mode: Arc<Mode>,
+    pub(crate) doc_header: Arc<String>,
 }
 
 impl Clone for Context {
@@ -74,6 +75,7 @@ impl Clone for Context {
             path_resolver: self.path_resolver.clone(),
             mode: self.mode.clone(),
             services: self.services.clone(),
+            doc_header: self.doc_header.clone(),
         }
     }
 }
@@ -319,6 +321,7 @@ impl ContextBuilder {
         services: Arc<[crate::IdlService]>,
         source_type: SourceType,
         change_case: bool,
+        doc_header: Arc<String>,
     ) -> Context {
         Context {
             adjusts: Default::default(),
@@ -332,6 +335,7 @@ impl ContextBuilder {
                 Mode::SingleFile { .. } => Arc::new(DefaultPathResolver),
             },
             mode: Arc::new(self.mode),
+            doc_header,
         }
     }
 }

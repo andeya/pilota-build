@@ -7,6 +7,8 @@ html_logo_url = "https://github.com/cloudwego/pilota/raw/main/.github/assets/log
 
 use std::{path::PathBuf, sync::Arc};
 
+use salsa::Durability;
+
 pub use codegen::{
     Codegen, protobuf::ProtobufBackend, traits::CodegenBackend,
 };
@@ -28,7 +30,6 @@ use plugin::{
 };
 pub use plugin::{BoxClonePlugin, ClonePlugin, Plugin};
 use resolve::{Resolver, ResolveResult};
-use salsa::Durability;
 pub use symbol::{DefId, IdentName};
 pub use symbol::Symbol;
 pub use tags::TagId;
@@ -73,6 +74,7 @@ pub struct Builder<MkB, P> {
     ignore_unused: bool,
     touches: Vec<(std::path::PathBuf, Vec<String>)>,
     change_case: bool,
+    doc_header: Option<String>,
 }
 
 impl<MkB> Builder<MkB, ThriftParser> {
@@ -89,6 +91,7 @@ impl<MkB> Builder<MkB, ThriftParser> {
             touches: Vec::default(),
             ignore_unused: true,
             change_case: true,
+            doc_header: None,
         }
     }
 }
@@ -107,6 +110,7 @@ impl<MkB> Builder<MkB, ProtobufParser> {
             touches: Vec::default(),
             ignore_unused: true,
             change_case: true,
+            doc_header: None,
         }
     }
 }
@@ -131,9 +135,13 @@ impl<MkB, P> Builder<MkB, P> {
             ignore_unused: self.ignore_unused,
             touches: self.touches,
             change_case: self.change_case,
+            doc_header: None,
         }
     }
-
+    pub fn doc_header(mut self, doc_header: String) -> Self {
+        self.doc_header = Some(doc_header);
+        self
+    }
     pub fn plugin<Plu: Plugin + 'static>(mut self, p: Plu) -> Self {
         self.plugins.push(Box::new(p));
 
@@ -281,7 +289,7 @@ impl<MkB, P> Builder<MkB, P>
             CollectMode::All
         });
 
-        let cx = cx.build(Arc::from(services), self.source_type, self.change_case);
+        let cx = cx.build(Arc::from(services), self.source_type, self.change_case,Arc::from(self.doc_header.unwrap_or_default()));
 
         cx.exec_plugin(BoxedPlugin);
 
