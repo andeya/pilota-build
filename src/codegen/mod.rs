@@ -409,14 +409,13 @@ impl<B> Codegen<B>
             .iter()
             .map(|m| self.backend.codegen_service_method(def_id, m))
             .join("\n");
-
-        stream.push_str(&format! {
-            r#"
+        if !methods.is_empty() {
+            stream.push_str(&format! {r#"
             pub trait {name} {{
                 {methods}
             }}
-            "#
-        });
+            "#});
+        }
         self.backend.codegen_service_impl(def_id, stream, s);
     }
 

@@ -12,7 +12,7 @@
 [package]
 edition = "2021"
 name = "pilota-build2"
-version = "0.7.9"
+version = "0.7.10"
 authors = ["Pilota Team <pilota@cloudwego.io>", "Andeya <andeyalee@outlook.com>"]
 description = "Compile thrift and protobuf idl into rust code at compile-time."
 homepage = "https://cloudwego.io/docs/pilota/"
