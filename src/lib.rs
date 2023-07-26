@@ -39,7 +39,7 @@ mod util;
 pub mod codegen;
 pub mod db;
 pub(crate) mod errors;
-mod fmt;
+pub mod fmt;
 mod index;
 pub mod ir;
 mod middle;
