@@ -8,6 +8,7 @@ use protobuf::descriptor::{
     DescriptorProto,
     EnumDescriptorProto, field_descriptor_proto::{Label, Type}, ServiceDescriptorProto,
 };
+pub use protobuf::descriptor::FileDescriptorProto;
 
 use crate::{
     index::Idx,
@@ -479,25 +480,9 @@ impl Lower {
     }
 }
 
-impl Parser for ProtobufParser {
-    fn input<P: AsRef<std::path::Path>>(&mut self, path: P) {
-        let p = path.as_ref();
-        self.input_files.insert(
-            p.normalize()
-                .unwrap_or_else(|_| panic!("normalize path failed: {}", p.display()))
-                .into_path_buf(),
-        );
-        self.inner.input(path);
-    }
-
-    fn include_dirs(&mut self, dirs: Vec<std::path::PathBuf>) {
-        self.include_dirs = dirs.clone();
-        self.inner.includes(dirs);
-    }
-
-    fn parse(self) -> super::ParseResult {
+impl ProtobufParser {
+    pub fn parse_and_typecheck(&self) -> (Vec<protobuf::descriptor::FileDescriptorProto>, super::ParseResult) {
         let descriptors = self.inner.parse_and_typecheck().unwrap().file_descriptors;
-
         let mut input_file_ids = vec![];
 
         let mut lower = Lower::default();
@@ -525,10 +510,32 @@ impl Parser for ProtobufParser {
             });
         });
 
-        super::ParseResult {
+        (descriptors, super::ParseResult {
             files,
             input_files: input_file_ids,
             file_ids_map: file_ids,
-        }
+        })
+    }
+}
+
+impl Parser for ProtobufParser {
+    fn input<P: AsRef<std::path::Path>>(&mut self, path: P) {
+        let p = path.as_ref();
+        self.input_files.insert(
+            p.normalize()
+                .unwrap_or_else(|_| panic!("normalize path failed: {}", p.display()))
+                .into_path_buf(),
+        );
+        self.inner.input(path);
+    }
+
+    fn include_dirs(&mut self, dirs: Vec<std::path::PathBuf>) {
+        self.include_dirs = dirs.clone();
+        self.inner.includes(dirs);
+    }
+
+    fn parse(self) -> super::ParseResult {
+        let (_, ret) = self.parse_and_typecheck();
+        ret
     }
 }
