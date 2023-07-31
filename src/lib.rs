@@ -7,10 +7,8 @@ html_logo_url = "https://github.com/cloudwego/pilota/raw/main/.github/assets/log
 
 use std::{path::PathBuf, sync::Arc};
 
-use salsa::Durability;
-
 pub use codegen::{
-    Codegen, protobuf::ProtobufBackend, traits::CodegenBackend,
+    Codegen, protobuf::ProtobufBackend, thrift::ThriftBackend, traits::CodegenBackend,
 };
 use db::{RirDatabase, RootDatabase};
 use middle::{
@@ -30,6 +28,7 @@ use plugin::{
 };
 pub use plugin::{BoxClonePlugin, ClonePlugin, Plugin};
 use resolve::{Resolver, ResolveResult};
+use salsa::Durability;
 pub use symbol::{DefId, IdentName};
 pub use symbol::Symbol;
 pub use tags::TagId;
@@ -289,7 +288,7 @@ impl<MkB, P> Builder<MkB, P>
             CollectMode::All
         });
 
-        let cx = cx.build(Arc::from(services), self.source_type, self.change_case,Arc::from(self.doc_header.unwrap_or_default()));
+        let cx = cx.build(Arc::from(services), self.source_type, self.change_case, Arc::from(self.doc_header.unwrap_or_default()));
 
         cx.exec_plugin(BoxedPlugin);
 

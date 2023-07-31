@@ -39,6 +39,7 @@ pub(crate) mod traits;
 mod workspace;
 
 pub mod protobuf;
+pub mod thrift;
 
 #[derive(Clone)]
 pub struct Codegen<B> {
