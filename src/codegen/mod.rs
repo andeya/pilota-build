@@ -409,6 +409,7 @@ impl<B> Codegen<B>
         let methods = methods
             .iter()
             .map(|m| self.backend.codegen_service_method(def_id, m))
+            .filter(|code| !code.is_empty())
             .join("\n");
         if !methods.is_empty() {
             stream.push_str(&format! {r#"
